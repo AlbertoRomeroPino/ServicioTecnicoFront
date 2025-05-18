@@ -1,0 +1,7 @@
+{
+  "name": "ficha_tecnica",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
