@@ -35,3 +35,14 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+html, body, .ion-page ion-content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; // o center
+}
+
+ion-content {
+  padding-top: 32px;
+}

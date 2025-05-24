@@ -1,0 +1,19 @@
+.clientes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* hasta 3 columnas adaptables */
+  gap: 16px;
+  padding: 16px;
+}
+
+ion-item-sliding {
+  width: 100%;
+}
+
+ion-card {
+  margin: 0;
+}
+
+ion-fab{
+  bottom: 64px !important;
+  right: 16px !important;
+}

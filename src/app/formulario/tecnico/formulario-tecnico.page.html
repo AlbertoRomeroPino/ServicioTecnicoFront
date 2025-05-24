@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>formulario-tecnico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form #tecnicoForm="ngForm">
+    <ion-item>
+      <ion-label position="floating">Apodo</ion-label>
+      <ion-input
+        type="text"
+        name="apodo"
+        [(ngModel)]="tecnico.apodo"
+        required
+        [readonly]="!!tecnico.apodo"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input
+        type="text"
+        name="nombre"
+        [(ngModel)]="tecnico.nombre"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Apellidos</ion-label>
+      <ion-input
+        type="tel"
+        name="apellido"
+        [(ngModel)]="tecnico.apellido"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Número Teléfono</ion-label>
+      <ion-input
+        type="tel"
+        name="numeroTelefono"
+        [(ngModel)]="tecnico.numeroTelefono"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      expand="block"
+      *ngIf="!tecnico.apodo"
+      (click)="guardarTecnico()"
+      [disabled]="!tecnicoForm.form.valid"
+    >
+      Guardar
+    </ion-button>
+    <ion-button
+      expand="block"
+      *ngIf="tecnico.apodo"
+      (click)="actualizarTecnico()"
+      [disabled]="!tecnicoForm.form.valid"
+    >
+      Actualizar
+    </ion-button>
+  </form>
+</ion-content>

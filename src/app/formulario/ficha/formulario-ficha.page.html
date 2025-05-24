@@ -1,0 +1,85 @@
+<ion-content class="ion-padding">
+  <form #fichaForm="ngForm">
+    <ion-item>
+      <ion-label position="floating">Rotura de cliente</ion-label>
+      <ion-input
+        type="text"
+        name="roturaCliente"
+        [(ngModel)]="ficha.roturaCliente"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Diagnóstico técnico</ion-label>
+      <ion-input
+        type="text"
+        name="diagnosticoTecnico"
+        [(ngModel)]="ficha.diagnosticoTecnico"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Presupuesto</ion-label>
+      <ion-input
+        type="number"
+        name="presupuesto"
+        [(ngModel)]="ficha.presupuesto"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Fecha entrada</ion-label>
+      <ion-input
+        type="date"
+        name="fechaEntrada"
+        [(ngModel)]="ficha.fechaEntrada"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Fecha salida</ion-label>
+      <ion-input
+        type="date"
+        name="fechaSalida"
+        [(ngModel)]="ficha.fechaSalida"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Cliente</ion-label>
+      <ion-select
+        [(ngModel)]="ficha.cliente"
+        name="cliente"
+        interface="popover"
+        required
+        [compareWith]="compareById"
+      >
+        <ion-select-option *ngFor="let cliente of clientes" [value]="cliente">
+          {{ cliente.nombre }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Técnico</ion-label>
+      <ion-select
+        [(ngModel)]="ficha.tecnico"
+        name="tecnico"
+        interface="popover"
+        required
+        [compareWith]="compareByApodo"
+      >
+        <ion-select-option *ngFor="let tecnico of tecnicos" [value]="tecnico">
+          {{ tecnico.apodo }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="block" color="primary" (click)="guardarFicha()" [disabled]="!fichaForm.form.valid">
+      Guardar ficha
+    </ion-button>
+  </form>
+</ion-content>

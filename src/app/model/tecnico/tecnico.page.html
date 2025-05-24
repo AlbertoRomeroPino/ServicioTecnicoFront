@@ -1,0 +1,118 @@
+<ion-content [fullscreen]="true" class="clientes-content">
+  <!-- Formulario de búsqueda SIEMPRE ARRIBA -->
+  <ion-item>
+    <ion-select
+      [(ngModel)]="tipoBusqueda"
+      interface="popover"
+      placeholder="Buscar por..."
+      slot="start"
+    >
+      <ion-select-option value="apodo">Apodo</ion-select-option>
+      <ion-select-option value="telefono">Teléfono</ion-select-option>
+    </ion-select>
+    <ion-input
+      [type]="tipoBusqueda === 'telefono' ? 'tel' : 'text'"
+      [(ngModel)]="valorBusqueda"
+      placeholder="Introduce valor"
+      name="busqueda"
+    >
+    </ion-input>
+    <ion-button
+      [disabled]="!valorBusqueda || !tipoBusqueda"
+      (click)="buscarTecnico()"
+    >
+      <ion-icon name="search-outline"></ion-icon>
+    
+    </ion-button>
+    <ion-button
+      fill="clear"
+      color="medium"
+      *ngIf="tecnicoFiltrado"
+      (click)="limpiarBusqueda()"
+    >
+      Limpiar
+    </ion-button>
+  </ion-item>
+
+  <!-- Lista de técnicos en columnas de 3, con swipe -->
+<ng-container *ngIf="!tecnicoFiltrado">
+  <div class="tecnicos-grid">
+    <ion-item-sliding *ngFor="let tecnico of tecnicos">
+      <ion-item>
+        <ion-label>
+          <div style="display: flex; flex-direction: row; align-items: center">
+            <ion-card-subtitle style="margin-right: 12px; min-width: 60px">
+              {{ tecnico.nombre }} 
+              {{ tecnico.apellido }}
+            </ion-card-subtitle>
+            <ion-card-title
+              class="ion-text-capitalize ion-text-center"
+              style="width: 100%"
+            >
+              {{ tecnico.apodo }}
+            </ion-card-title>
+          </div>
+          <ion-card-subtitle>
+            TLF: {{ tecnico.numeroTelefono }}
+          </ion-card-subtitle>
+          
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="borrarTecnico(tecnico)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="primary" (click)="editarTecnico(tecnico)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </div>
+</ng-container>
+
+
+  <ion-card *ngIf="tecnicoFiltrado">
+    <ion-card-header class="ion-text-center">
+      <ion-card-title class="ion-text-capitalize">
+        {{ tecnicoFiltrado.nombre }}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{ "Apodo: " + tecnicoFiltrado.apodo }}
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        {{ "Nombre:" + tecnicoFiltrado.nombre + " " + tecnicoFiltrado.apellido}}
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        {{ "TLF: " + tecnicoFiltrado.numeroTelefono }}
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ng-container
+      *ngIf="tecnicoFiltrado.fichas &&
+    tecnicoFiltrado.fichas.length"
+    >
+      <ion-card *ngFor="let ficha of tecnicoFiltrado.fichas" class="ficha-card">
+        <ion-card-header>
+          <ion-card-title>ID Ficha: {{ ficha.id }}</ion-card-title>
+          <ion-card-subtitle
+            >Diagnóstico: {{ ficha.diagnosticoTecnico }}</ion-card-subtitle
+          >
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Rotura:</strong> {{ ficha.roturaCliente }}</p>
+          <p>
+            <strong>Presupuesto:</strong> {{ ficha.presupuesto | currency }}
+          </p>
+          <p><strong>Entrada:</strong> {{ ficha.fechaEntrada }}</p>
+          <p><strong>Salida:</strong> {{ ficha.fechaSalida }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="abrirFormularioTecnico()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,10 @@
+ion-fab{
+  bottom: 64px !important;
+  right: 16px !important;
+}
+.tecnicos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); // columnas adaptables
+  gap: 16px;
+  padding: 16px;
+}

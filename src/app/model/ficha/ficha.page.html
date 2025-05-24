@@ -1,0 +1,223 @@
+<ion-content [fullscreen]="true" class="ficha-content">
+  <ion-item>
+    <ion-select
+      [(ngModel)]="tipoBusqueda"
+      interface="popover"
+      placeholder="Buscar por..."
+      slot="start"
+    >
+      <ion-select-option value="id">ID Ficha</ion-select-option>
+      <ion-select-option value="tecnico">Técnico</ion-select-option>
+      <ion-select-option value="cliente">Cliente</ion-select-option>
+      <ion-select-option value="dia">Solo un día</ion-select-option>
+      <ion-select-option value="fechas">Entre dos días</ion-select-option>
+    </ion-select>
+
+    <!-- Input para ID, Técnico, Cliente -->
+    <ion-input
+      *ngIf="tipoBusqueda === 'id' || tipoBusqueda === 'tecnico' || tipoBusqueda === 'cliente'"
+      [type]="tipoBusqueda === 'id' || tipoBusqueda === 'cliente' ? 'number' : 'text'"
+      [(ngModel)]="valorBusqueda"
+      placeholder="Introduce valor"
+    >
+    </ion-input>
+
+    <!-- Input para solo un día -->
+    <ion-input
+      *ngIf="tipoBusqueda === 'dia'"
+      type="date"
+      [(ngModel)]="valorBusqueda"
+      placeholder="Selecciona fecha"
+    >
+    </ion-input>
+
+    <!-- Inputs para rango de fechas -->
+    <ion-input
+      *ngIf="tipoBusqueda === 'fechas'"
+      type="date"
+      [(ngModel)]="fechaInicio"
+      placeholder="Fecha inicio"
+    >
+    </ion-input>
+    <ion-input
+      *ngIf="tipoBusqueda === 'fechas'"
+      type="date"
+      [(ngModel)]="fechaFin"
+      placeholder="Fecha fin"
+    >
+    </ion-input>
+
+    <ion-button
+      [disabled]="!valorBusqueda || !tipoBusqueda"
+      (click)="getFicha()"
+    >
+      <ion-icon name="search-outline"></ion-icon>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      color="medium"
+      *ngIf="fichaFiltrado"
+      (click)="limpiarBusqueda()"
+    >
+      Limpiar
+    </ion-button>
+  </ion-item>
+
+  <ng-container *ngIf="!fichaFiltrado">
+    <div class="fichas-grid">
+      <ion-item-sliding *ngFor="let ficha of fichas">
+        <ion-item>
+          <ion-label>
+            <div
+              style="display: flex; flex-direction: row; align-items: center"
+            >
+              <ion-card-title
+                class="ion-text-capitalize ion-text-center"
+                style="width: 100%"
+              >
+                Ficha #{{ ficha.id }}
+              </ion-card-title>
+            </div>
+            <ion-card-subtitle>
+              <strong>Rotura:</strong> {{ ficha.roturaCliente }}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Diagnóstico:</strong> {{ ficha.diagnosticoTecnico }}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Presupuesto:</strong> {{ ficha.presupuesto }}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Fecha entrada:</strong> {{ ficha.fechaEntrada }}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Fecha salida:</strong> {{ ficha.fechaSalida || 'Pendiente'
+              }}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Técnico:</strong>
+              <ng-container *ngIf="getTecnicoPorFicha(ficha)">
+                {{ getTecnicoPorFicha(ficha).apodo }}
+              </ng-container>
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              <strong>Cliente:</strong>
+              <ng-container *ngIf="getClientePorFicha(ficha)">
+                {{ getClientePorFicha(ficha).nombre }}
+              </ng-container>
+            </ion-card-subtitle>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="borrarFicha(ficha)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="primary" (click)="editarFicha(ficha)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
+  </ng-container>
+
+ <!-- Mostrar fichas si la búsqueda es por cliente -->
+<ion-card *ngIf="tipoBusqueda === 'cliente' && fichaFiltrado && fichaFiltrado.length">
+  <ion-card-header>
+    <ion-card-title>Fichas del cliente ({{ fichaFiltrado.length }})</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div *ngFor="let ficha of fichaFiltrado">
+      <strong>Ficha #{{ ficha.id }}</strong><br />
+      <strong>Rotura de cliente:</strong> {{ ficha.roturaCliente }}<br />
+      <strong>Diagnóstico técnico:</strong> {{ ficha.diagnosticoTecnico }}<br />
+      <strong>Presupuesto:</strong> {{ ficha.presupuesto }}<br />
+      <strong>Fecha entrada:</strong> {{ ficha.fechaEntrada }}<br />
+      <strong>Fecha salida:</strong> {{ ficha.fechaSalida }}<br />
+
+      <!-- Mostrar Técnico que hizo la ficha -->
+      <ng-container *ngIf="getTecnicoPorFicha(ficha)">
+        <strong>Técnico:</strong> {{ getTecnicoPorFicha(ficha).nombre }} ({{ getTecnicoPorFicha(ficha).apodo }})<br />
+      </ng-container>
+
+      <hr />
+    </div>
+  </ion-card-content>
+</ion-card>
+
+<!-- Mostrar fichas si la búsqueda es por técnico -->
+<ion-card *ngIf="tipoBusqueda === 'tecnico' && fichaFiltrado && fichaFiltrado.length">
+  <ion-card-header>
+    <ion-card-title>Fichas del técnico ({{ fichaFiltrado.length }})</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div *ngFor="let ficha of fichaFiltrado">
+      <strong>Ficha #{{ ficha.id }}</strong><br />
+      <strong>Rotura de cliente:</strong> {{ ficha.roturaCliente }}<br />
+      <strong>Diagnóstico técnico:</strong> {{ ficha.diagnosticoTecnico }}<br />
+      <strong>Presupuesto:</strong> {{ ficha.presupuesto }}<br />
+      <strong>Fecha entrada:</strong> {{ ficha.fechaEntrada }}<br />
+      <strong>Fecha salida:</strong> {{ ficha.fechaSalida }}<br />
+
+      <!-- Mostrar Cliente que corresponde a la ficha -->
+      <ng-container *ngIf="getClientePorFicha(ficha)">
+        <strong>Cliente:</strong> {{ getClientePorFicha(ficha).nombre }} ({{ getClientePorFicha(ficha).dni }})<br />
+      </ng-container>
+
+      <hr />
+    </div>
+  </ion-card-content>
+</ion-card>
+
+
+<!-- Si fichaFiltrado es un objeto único -->
+<ion-card *ngIf="fichaFiltrado && !fichaFiltrado.length">
+  <ion-card-header>
+    <ion-card-title>Ficha #{{ fichaFiltrado.id }}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div>
+      <strong>Rotura de cliente:</strong> {{ fichaFiltrado.roturaCliente }}<br />
+      <strong>Diagnóstico técnico:</strong> {{ fichaFiltrado.diagnosticoTecnico }}<br />
+      <strong>Presupuesto:</strong> {{ fichaFiltrado.presupuesto }}<br />
+      <strong>Fecha entrada:</strong> {{ fichaFiltrado.fechaEntrada }}<br />
+      <strong>Fecha salida:</strong> {{ fichaFiltrado.fechaSalida }}<br />
+    </div>
+
+    <!-- Aquí podrías añadir acordeones solo si es una ficha única -->
+    <ion-accordion-group>
+      <ion-accordion value="cliente">
+        <ion-item slot="header" color="light">
+          <ion-label><strong>Cliente</strong></ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content" *ngIf="clienteFicha">
+          <strong>DNI:</strong> {{ clienteFicha.dni }}<br />
+          <strong>Nombre:</strong> {{ clienteFicha.nombre }}<br />
+          <strong>Teléfono:</strong> {{ clienteFicha.numeroTelefono }}<br />
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="tecnico">
+        <ion-item slot="header" color="light">
+          <ion-label><strong>Técnico</strong></ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content" *ngIf="tecnicoFicha">
+          <strong>Apodo:</strong> {{ tecnicoFicha.apodo }}<br />
+          <strong>Nombre:</strong> {{ tecnicoFicha.nombre }}<br />
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-card-content>
+</ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="abrirFormularioFicha()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<script>
+  console.log('Clientes:', this.clientes);
+  console.log('Técnicos:', this.tecnicos);
+  console.log('Ficha buscada:', ficha);
+</script>
