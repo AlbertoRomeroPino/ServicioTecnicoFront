@@ -12,6 +12,7 @@ import { ApiTecnicoService } from 'src/app/services/tecnico/api-tecnico.service'
   imports: [IonicModule, FormsModule, CommonModule],
 })
 export class FormularioTecnicoPage {
+  @Input() esEdicion: boolean = false;
   @Input() tecnico = {
     apodo: '',
     nombre: '',
@@ -19,6 +20,17 @@ export class FormularioTecnicoPage {
     numeroTelefono: '',
   };
 
+  ngOnInit() {
+    if (!this.tecnico) {
+      this.tecnico = {
+        apodo: '',
+        nombre: '',
+        apellido: '',
+        numeroTelefono: '',
+      };
+    }
+  }
+  
   constructor(
     private modalCtrl: ModalController,
     private apiService: ApiTecnicoService
@@ -31,17 +43,17 @@ export class FormularioTecnicoPage {
   }
 
   actualizarTecnico() {
-  this.apiService.putTecnico(this.tecnico)
-    .then(() => {
-      this.modalCtrl.dismiss(true); // Éxito
-    })
-    .catch((error) => {
-      console.error('Error al actualizar el técnico:', error);
-      // Aquí puedes mostrar un mensaje de error si quieres
-      alert('No se pudo actualizar el técnico. Inténtalo de nuevo.');
-    });
-}
-
+    this.apiService
+      .putTecnico(this.tecnico)
+      .then(() => {
+        this.modalCtrl.dismiss(true); // Éxito
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el técnico:', error);
+        // Aquí puedes mostrar un mensaje de error si quieres
+        alert('No se pudo actualizar el técnico. Inténtalo de nuevo.');
+      });
+  }
 
   cerrar() {
     this.modalCtrl.dismiss();

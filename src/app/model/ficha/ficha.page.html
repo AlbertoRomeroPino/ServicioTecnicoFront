@@ -1,67 +1,72 @@
 <ion-content [fullscreen]="true" class="ficha-content">
-  <ion-item>
-    <ion-select
-      [(ngModel)]="tipoBusqueda"
-      interface="popover"
-      placeholder="Buscar por..."
-      slot="start"
-    >
-      <ion-select-option value="id">ID Ficha</ion-select-option>
-      <ion-select-option value="tecnico">Técnico</ion-select-option>
-      <ion-select-option value="cliente">Cliente</ion-select-option>
-      <ion-select-option value="dia">Solo un día</ion-select-option>
-      <ion-select-option value="fechas">Entre dos días</ion-select-option>
-    </ion-select>
+<ion-item>
+  <ion-select
+    [(ngModel)]="tipoBusqueda"
+    interface="popover"
+    placeholder="Buscar por..."
+    slot="start"
+  >
+    <ion-select-option value="id">ID Ficha</ion-select-option>
+    <ion-select-option value="tecnico">Técnico</ion-select-option>
+    <ion-select-option value="cliente">Cliente</ion-select-option>
+    <ion-select-option value="dia">Dia</ion-select-option>
+    <ion-select-option value="fechas">rango de días</ion-select-option>
+  </ion-select>
 
-    <!-- Input para ID, Técnico, Cliente -->
-    <ion-input
-      *ngIf="tipoBusqueda === 'id' || tipoBusqueda === 'tecnico' || tipoBusqueda === 'cliente'"
-      [type]="tipoBusqueda === 'id' || tipoBusqueda === 'cliente' ? 'number' : 'text'"
-      [(ngModel)]="valorBusqueda"
-      placeholder="Introduce valor"
-    >
-    </ion-input>
+  <!-- Input para ID, Técnico, Cliente -->
+  <ion-input
+    *ngIf="tipoBusqueda === 'id' || tipoBusqueda === 'tecnico' || tipoBusqueda === 'cliente'"
+    [type]="tipoBusqueda === 'id' || tipoBusqueda === 'cliente' ? 'number' : 'text'"
+    [(ngModel)]="valorBusqueda"
+    placeholder="Introduce valor"
+  >
+  </ion-input>
 
-    <!-- Input para solo un día -->
-    <ion-input
-      *ngIf="tipoBusqueda === 'dia'"
-      type="date"
-      [(ngModel)]="valorBusqueda"
-      placeholder="Selecciona fecha"
-    >
-    </ion-input>
+  <!-- Input para solo un día -->
+  <ion-input
+    *ngIf="tipoBusqueda === 'dia'"
+    type="date"
+    [(ngModel)]="valorBusqueda"
+    placeholder="Selecciona fecha"
+  >
+  </ion-input>
 
-    <!-- Inputs para rango de fechas -->
-    <ion-input
-      *ngIf="tipoBusqueda === 'fechas'"
-      type="date"
-      [(ngModel)]="fechaInicio"
-      placeholder="Fecha inicio"
-    >
-    </ion-input>
-    <ion-input
-      *ngIf="tipoBusqueda === 'fechas'"
-      type="date"
-      [(ngModel)]="fechaFin"
-      placeholder="Fecha fin"
-    >
-    </ion-input>
+  <!-- Inputs para rango de fechas -->
+  <ion-input
+    *ngIf="tipoBusqueda === 'fechas'"
+    type="date"
+    [(ngModel)]="fechaInicio"
+    placeholder="Fecha inicio"
+  >
+  </ion-input>
+  <ion-input
+    *ngIf="tipoBusqueda === 'fechas'"
+    type="date"
+    [(ngModel)]="fechaFin"
+    placeholder="Fecha fin"
+  >
+  </ion-input>
 
-    <ion-button
-      [disabled]="!valorBusqueda || !tipoBusqueda"
-      (click)="getFicha()"
-    >
-      <ion-icon name="search-outline"></ion-icon>
-    </ion-button>
-    <ion-button
-      fill="clear"
-      color="medium"
-      *ngIf="fichaFiltrado"
-      (click)="limpiarBusqueda()"
-    >
-      Limpiar
-    </ion-button>
-  </ion-item>
+  <ion-button
+    [disabled]="
+      !tipoBusqueda ||
+      (tipoBusqueda !== 'fechas' && !valorBusqueda) ||
+      (tipoBusqueda === 'fechas' && (!fechaInicio || !fechaFin))
+    "
+    (click)="getFicha()"
+  >
+    <ion-icon name="search-outline"></ion-icon>
+  </ion-button>
+
+  <ion-button
+    fill="clear"
+    color="medium"
+    *ngIf="fichaFiltrado"
+    (click)="limpiarBusqueda()"
+  >
+    Limpiar
+  </ion-button>
+</ion-item>
 
   <ng-container *ngIf="!fichaFiltrado">
     <div class="fichas-grid">
@@ -169,7 +174,7 @@
 </ion-card>
 
 
-<!-- Si fichaFiltrado es un objeto único -->
+<!-- Si fichaFiltrado es un ficha único -->
 <ion-card *ngIf="fichaFiltrado && !fichaFiltrado.length">
   <ion-card-header>
     <ion-card-title>Ficha #{{ fichaFiltrado.id }}</ion-card-title>
@@ -209,11 +214,40 @@
   </ion-card-content>
 </ion-card>
 
+<!-- Mostrar fichas filtradas por fecha (día o rango) -->
+<ion-card *ngIf="(tipoBusqueda === 'dia' || tipoBusqueda === 'fechas') && fichaFiltrado && fichaFiltrado.length">
+  <ion-card-header>
+    <ion-card-title>Fichas encontradas ({{ fichaFiltrado.length }})</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div *ngFor="let ficha of fichaFiltrado">
+      <strong>Ficha #{{ ficha.id }}</strong><br />
+      <strong>Rotura de cliente:</strong> {{ ficha.roturaCliente }}<br />
+      <strong>Diagnóstico técnico:</strong> {{ ficha.diagnosticoTecnico }}<br />
+      <strong>Presupuesto:</strong> {{ ficha.presupuesto }}<br />
+      <strong>Fecha entrada:</strong> {{ ficha.fechaEntrada }}<br />
+      <strong>Fecha salida:</strong> {{ ficha.fechaSalida || 'Pendiente' }}<br />
+
+      <ng-container *ngIf="getTecnicoPorFicha(ficha)">
+        <strong>Técnico:</strong> {{ getTecnicoPorFicha(ficha).apodo }}<br />
+      </ng-container>
+
+      <ng-container *ngIf="getClientePorFicha(ficha)">
+        <strong>Cliente:</strong> {{ getClientePorFicha(ficha).nombre }}<br />
+      </ng-container>
+
+      <hr />
+    </div>
+  </ion-card-content>
+</ion-card>
+
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="abrirFormularioFicha()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
 </ion-content>
 
 <script>

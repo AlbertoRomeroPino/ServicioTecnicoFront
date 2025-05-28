@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { CapacitorHttp, HttpOptions } from '@capacitor/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiFichaService {
-
   getFichaById(id: number) {
     const options: HttpOptions = {
       url: 'http://localhost:8080/ficha/' + id,
@@ -16,7 +15,7 @@ export class ApiFichaService {
       return response.data;
     });
   }
-  
+
   getFichas() {
     const options: HttpOptions = {
       url: 'http://localhost:8080/ficha',
@@ -91,7 +90,7 @@ export class ApiFichaService {
 
   getFichasByDia(dia: string) {
     const options: HttpOptions = {
-      url: 'http://localhost:8080/ficha/dia/' + dia,
+      url: 'http://localhost:8080/ficha/fecha/' + dia,
       params: {},
     };
 
@@ -100,14 +99,20 @@ export class ApiFichaService {
     });
   }
 
-  getFichasByFechas(fecha: string , fecha2: string) {
+  getFichasByFechas(fecha: string, fecha2: string) {
     const options: HttpOptions = {
-      url: 'http://localhost:8080/ficha/fechas/' + fecha + '/' + fecha2,
+      url: 'http://localhost:8080/ficha/fecha/' + fecha + '/' + fecha2,
       params: {},
     };
 
     return CapacitorHttp.get(options).then((response) => {
       return response.data;
     });
+  }
+
+  formatearFecha(fechaISO: string): string {
+    if (!fechaISO) return '';
+    const partes = fechaISO.split('-'); // ["2024", "03", "20"]
+    return `${partes[2]}/${partes[1]}/${partes[0]}`; // "20/03/2024"
   }
 }

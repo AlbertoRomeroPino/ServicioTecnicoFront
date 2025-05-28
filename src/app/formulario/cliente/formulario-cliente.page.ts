@@ -12,6 +12,7 @@ import { ApiClienteService } from '../../services/Cliente/api-cliente.service';
   imports: [IonicModule, FormsModule, CommonModule],
 })
 export class FormularioClientePage {
+  
   @Input() cliente = {
     id: null,
     dni: '',

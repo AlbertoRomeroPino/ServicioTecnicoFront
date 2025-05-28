@@ -60,7 +60,10 @@ export class FichaPage {
   limpiarBusqueda() {
     this.fichaFiltrado = null;
     this.valorBusqueda = '';
+    this.fechaInicio = '';
+    this.fechaFin = '';
     this.tipoBusqueda = null;
+    this.cargarFichas();
   }
 
   getFicha() {
@@ -82,37 +85,31 @@ export class FichaPage {
           this.buscarClienteTecnico(ficha);
         });
     } else if (this.tipoBusqueda === 'dia') {
-      if (this.valorBusqueda) {
-        this.apiService.getFichasByDia(this.valorBusqueda).then((ficha) => {
-          this.fichaFiltrado = ficha;
-          this.buscarClienteTecnico(ficha);
-        });
-      }
+      this.apiService.getFichasByDia(this.valorBusqueda).then((ficha) => {
+        this.fichaFiltrado = ficha;
+        console.log(this.fichaFiltrado);
+        this.buscarClienteTecnico(ficha);
+      });
     } else if (this.tipoBusqueda === 'fechas') {
-      if (this.fechaInicio && this.fechaFin) {
-        this.apiService
-          .getFichasByFechas(this.fechaInicio, this.fechaFin)
-          .then((ficha) => {
-            this.fichaFiltrado = ficha;
-            this.buscarClienteTecnico(ficha);
-          });
-      }
+      this.apiService.getFichasByFechas(this.fechaInicio, this.fechaFin).then((fichas) => {
+        this.fichas = fichas;
+        console.log(this.fichas);
+        this.buscarClienteTecnico(fichas);
+      });
     }
   }
 
+
+  
   getTecnicoPorFicha(ficha: any) {
-    return (
-      this.tecnicos.find((tecnico) =>
-        tecnico.fichas.some((f: any) => f.id === ficha.id)
-      ) || null
+    return this.tecnicos.find((tecnico) =>
+      tecnico.fichas.some((f: any) => f.id === ficha.id)
     );
   }
 
   getClientePorFicha(ficha: any) {
-    return (
-      this.clientes.find((cliente) =>
-        cliente.fichas.some((f: any) => f.id === ficha.id)
-      ) || null
+    return this.clientes.find((cliente) =>
+      cliente.fichas.some((f: any) => f.id === ficha.id)
     );
   }
 
@@ -120,14 +117,16 @@ export class FichaPage {
     this.clienteFicha = null;
     this.tecnicoFicha = null;
 
-    this.clienteFicha = this.clientes.find(
-      (cliente) =>
-        cliente.fichas && cliente.fichas.some((f: any) => f.id === ficha.id)
+    if (Array.isArray(ficha)) {
+      return;
+    }
+
+    this.clienteFicha = this.clientes.find((cliente) =>
+      cliente.fichas.some((f: any) => f.id === ficha.id)
     );
 
-    this.tecnicoFicha = this.tecnicos.find(
-      (tecnico) =>
-        tecnico.fichas && tecnico.fichas.some((f: any) => f.id === ficha.id)
+    this.tecnicoFicha = this.tecnicos.find((tecnico) =>
+      tecnico.fichas.some((f: any) => f.id === ficha.id)
     );
   }
 

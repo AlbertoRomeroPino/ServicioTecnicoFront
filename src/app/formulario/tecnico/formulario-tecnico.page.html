@@ -13,7 +13,7 @@
         name="apodo"
         [(ngModel)]="tecnico.apodo"
         required
-        [readonly]="!!tecnico.apodo"
+        [readonly]="esEdicion"
       ></ion-input>
     </ion-item>
 
@@ -49,15 +49,16 @@
 
     <ion-button
       expand="block"
-      *ngIf="!tecnico.apodo"
+      *ngIf="!esEdicion"
       (click)="guardarTecnico()"
       [disabled]="!tecnicoForm.form.valid"
     >
       Guardar
     </ion-button>
+
     <ion-button
       expand="block"
-      *ngIf="tecnico.apodo"
+      *ngIf="esEdicion"
       (click)="actualizarTecnico()"
       [disabled]="!tecnicoForm.form.valid"
     >

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Capacitor, CapacitorHttp, HttpOptions } from '@capacitor/core';
 
 @Injectable({

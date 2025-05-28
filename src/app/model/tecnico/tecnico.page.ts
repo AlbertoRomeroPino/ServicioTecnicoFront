@@ -61,17 +61,21 @@ export class TecnicoPage {
   }
 
   async abrirFormularioTecnico() {
-    const modal = await this.modalController.create({
-      component: FormularioTecnicoPage,
-    });
-    await modal.present();
-    console.log('abrir formulario tecnico');
+  const modal = await this.modalController.create({
+    component: FormularioTecnicoPage,
+    componentProps: {
+      esEdicion: false // Modo crear
+    },
+  });
 
-     const { data } = await modal.onWillDismiss();
+  await modal.present();
+  console.log('abrir formulario tecnico');
+
+  const { data } = await modal.onWillDismiss();
   if (data) {
     this.cargarTecnico();
   }
-  }
+}
 
   borrarTecnico(tecnico: any) {
     this.apiService.deleteTecnico(tecnico.id).then(() => {
@@ -82,8 +86,12 @@ export class TecnicoPage {
   async editarTecnico(tecnico: any) {
   const modal = await this.modalController.create({
     component: FormularioTecnicoPage,
-    componentProps: { tecnico: tecnico || {} }
+    componentProps: {
+      tecnico: tecnico || {}, // Datos del técnico a editar
+      esEdicion: true         // Modo edición
+    },
   });
+
   await modal.present();
   console.log('abrir formulario tecnico');
 
@@ -92,5 +100,4 @@ export class TecnicoPage {
     this.cargarTecnico();
   }
 }
-
 }

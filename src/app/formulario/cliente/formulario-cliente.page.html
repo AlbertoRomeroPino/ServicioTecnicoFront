@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Nuevo Cliente</ion-title>
+    <ion-title>Cliente</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -35,20 +35,20 @@
       ></ion-input>
     </ion-item>
     <ion-button
-  expand="block"
-  *ngIf="!cliente.id"
-  (click)="guardarCliente()"
-  [disabled]="!clienteForm.form.valid"
->
-  Guardar
-</ion-button>
-<ion-button
-  expand="block"
-  *ngIf="cliente.id"
-  (click)="actualizarCliente()"
-  [disabled]="!clienteForm.form.valid"
->
-  Actualizar
-</ion-button>
+      expand="block"
+      *ngIf="!cliente.id"
+      (click)="guardarCliente()"
+      [disabled]="!clienteForm.form.valid"
+    >
+      Guardar
+    </ion-button>
+    <ion-button
+      expand="block"
+      *ngIf="cliente.id"
+      (click)="actualizarCliente()"
+      [disabled]="!clienteForm.form.valid"
+    >
+      Actualizar
+    </ion-button>
   </form>
 </ion-content>

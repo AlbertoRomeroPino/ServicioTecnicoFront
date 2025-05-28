@@ -37,6 +37,7 @@ export class ApiTecnicoService {
       return response.data;
     });
   }
+  
   postTecnico(tecnico: any) {
     const options: HttpOptions = {
       url: 'http://localhost:8080/tecnico',
