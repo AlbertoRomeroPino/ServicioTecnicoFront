@@ -92,7 +92,7 @@ export class FichaPage {
       });
     } else if (this.tipoBusqueda === 'fechas') {
       this.apiService.getFichasByFechas(this.fechaInicio, this.fechaFin).then((fichas) => {
-        this.fichas = fichas;
+        this.fichaFiltrado = fichas;
         console.log(this.fichas);
         this.buscarClienteTecnico(fichas);
       });
