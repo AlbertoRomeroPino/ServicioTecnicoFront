@@ -97,24 +97,23 @@ export class FormularioFichaPage implements OnInit {
 
   // Función para tomar o seleccionar foto
   async seleccionarFoto(source: CameraSource) {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 90,
-        allowEditing: false,
-        resultType: CameraResultType.Base64,
-        source: source,
-        webUseInput: true,
-      });
+  try {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: source,
+      webUseInput: true // 👈 Añade esto para mejor soporte web
+    });
 
-      this.foto = `data:image/jpeg;base64,${image.base64String}`;
-      this.fileToUpload = this.base64ToFile(image.base64String!, 'imagen.jpg');
+    this.foto = `data:image/jpeg;base64,${image.base64String}`;
+    this.fileToUpload = this.base64ToFile(image.base64String!, 'imagen.jpg');
 
-      // Subir automáticamente
-      this.subirImagen();
-    } catch (error) {
-      console.error('Error al obtener foto', error);
-    }
+    this.subirImagen();
+  } catch (error) {
+    console.error('Error al obtener foto', error);
   }
+}
 
   // Convertir base64 a File
   base64ToFile(base64: string, filename: string): File {

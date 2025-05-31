@@ -78,7 +78,7 @@ export class TecnicoPage {
 }
 
   borrarTecnico(tecnico: any) {
-    this.apiService.deleteTecnico(tecnico.id).then(() => {
+    this.apiService.deleteTecnico(tecnico.apodo).then(() => {
       this.cargarTecnico();
     });
   }
@@ -87,8 +87,8 @@ export class TecnicoPage {
   const modal = await this.modalController.create({
     component: FormularioTecnicoPage,
     componentProps: {
-      tecnico: tecnico || {}, // Datos del técnico a editar
-      esEdicion: true         // Modo edición
+      tecnico: tecnico || {},
+      esEdicion: true         
     },
   });
 
