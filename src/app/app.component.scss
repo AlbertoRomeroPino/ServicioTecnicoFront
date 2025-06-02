@@ -1,0 +1,46 @@
+
+
+/* Estilos del menú */
+ion-menu {
+  --background: #ffffff;
+  --color: #000000;
+}
+
+/* Toolbar del menú (barra superior) */
+ion-toolbar[color="primary"] {
+  --background: #c40000; /* rojo del logo */
+  --color: #ffffff; /* texto blanco */
+}
+
+/* Estilo de los títulos */
+ion-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Lista de items en el menú */
+ion-item {
+  --background: transparent;
+  --color: #ffffff;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border-left: 5px solid transparent;
+}
+
+/* Item seleccionado */
+ion-item.selected {
+  background-color: #818181;
+  border-left: 5px solid #c40000;
+  font-weight: bold;
+}
+
+/* Hover de los items */
+ion-item:hover {
+  background-color: #4c4c4c;
+}
+
+/* Páginas generales */
+.ion-page {
+  background-color: #ffffff;
+  color: #000000;
+}
